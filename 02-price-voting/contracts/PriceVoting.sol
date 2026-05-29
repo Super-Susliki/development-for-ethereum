@@ -3,30 +3,19 @@ pragma solidity 0.8.28;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-// PriceVoting contract for the 02 task.
-// Users vote for a price by locking tokens. After voting ends anyone can
-// call finalize() to pick the winner, and voters can call claim() to get
-// their tokens back.
-
+// PriceVoting — token holders lock tokens behind a price to vote on it. While
+// voting is open, anyone can vote(price, amount); the contract pulls the tokens
+// via transferFrom. After votingEnd, anyone can finalize() once to set the
+// winning price, and voters claim() their locked tokens back.
+//
+// The required public interface (the functions tests call) is declared below.
+// You design the internal storage layout. See TASK.md for the full behavior
+// spec and the scenarios your tests must cover.
 contract PriceVoting {
-    IERC20 public token;
-    uint256 public votingEnd;
-
-    // price -> total weight locked behind that price
-    mapping(uint256 => uint256) public weightOf;
-    // voter -> total amount of tokens they have locked
-    mapping(address => uint256) public lockedOf;
-
-    // current leader (price with most weight so far)
-    uint256 public leaderPrice;
-    uint256 public leaderWeight;
-    // true if at least one OTHER price currently has weight == leaderWeight.
-    // Tracked in O(1) so finalize() can refuse to set a winner under a tie
-    // without iterating over all prices.
-    bool public tieAtTop;
-
-    uint256 public currentTokenPrice;
-    bool public finalized;
+    // TODO: declare the storage you need — e.g. the token reference, the voting
+    //       end timestamp, per-price accumulated weight, per-voter locked
+    //       balance, the current leader, the finalized price, and a finalized
+    //       flag.
 
     error VotingEnded();
     error VotingActive();
@@ -40,74 +29,50 @@ contract PriceVoting {
     event Claimed(address indexed voter, uint256 amount);
 
     constructor(IERC20 _token, uint256 _votingEnd) {
-        token = _token;
-        votingEnd = _votingEnd;
+        // TODO: store the token reference and the voting end timestamp.
     }
 
+    // ----- write -----
+
     function vote(uint256 price, uint256 amount) external {
-        if (block.timestamp >= votingEnd) revert VotingEnded();
-        if (amount == 0) revert ZeroAmount();
-
-        // pull tokens from the voter
-        bool ok = token.transferFrom(msg.sender, address(this), amount);
-        if (!ok) revert TransferFailed();
-
-        // update accounting
-        lockedOf[msg.sender] = lockedOf[msg.sender] + amount;
-        weightOf[price] = weightOf[price] + amount;
-
-        uint256 newWeight = weightOf[price];
-
-        // Update leader / tie tracking. Cases:
-        // - newWeight strictly exceeds current leader weight: this price
-        //   becomes the unique new leader and clears any prior tie.
-        // - newWeight equals current leader weight on a DIFFERENT price:
-        //   the leader pointer does not move (first-to-arrive wins) but a
-        //   tie at the top now exists.
-        // - any other case: leader and tie state are unchanged.
-        if (newWeight > leaderWeight) {
-            leaderPrice = price;
-            leaderWeight = newWeight;
-            tieAtTop = false;
-        } else if (newWeight == leaderWeight && price != leaderPrice) {
-            tieAtTop = true;
-        }
-
-        emit Voted(msg.sender, price, amount);
+        // TODO
     }
 
     function finalize() external {
-        if (block.timestamp < votingEnd) revert VotingActive();
-        if (finalized) revert AlreadyFinalized();
-
-        finalized = true;
-        // Spec edge case: with no votes, or with a tie at the top, the
-        // price must not be changed.
-        if (leaderWeight > 0 && !tieAtTop) {
-            currentTokenPrice = leaderPrice;
-        }
-
-        emit PriceFinalized(leaderPrice, leaderWeight);
+        // TODO
     }
 
     function claim() external {
-        if (block.timestamp < votingEnd) revert VotingActive();
-
-        uint256 amount = lockedOf[msg.sender];
-        if (amount == 0) revert NothingToClaim();
-
-        // CEI: zero the locked balance before the external token call to
-        // prevent reentrancy through tokens with transfer hooks.
-        lockedOf[msg.sender] = 0;
-
-        emit Claimed(msg.sender, amount);
-
-        bool ok = token.transfer(msg.sender, amount);
-        if (!ok) revert TransferFailed();
+        // TODO
     }
 
-    // required getter from the spec
+    // ----- read -----
+
+    function token() external view returns (IERC20) {
+        // TODO
+    }
+
+    function votingEnd() external view returns (uint256) {
+        // TODO
+    }
+
+    function weightOf(uint256 price) external view returns (uint256) {
+        // TODO
+    }
+
+    function lockedOf(address voter) external view returns (uint256) {
+        // TODO
+    }
+
     function leader() external view returns (uint256 price, uint256 weight) {
-        return (leaderPrice, leaderWeight);
+        // TODO
+    }
+
+    function currentTokenPrice() external view returns (uint256) {
+        // TODO
+    }
+
+    function finalized() external view returns (bool) {
+        // TODO
     }
 }

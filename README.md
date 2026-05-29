@@ -28,6 +28,20 @@ Each task is a self-contained folder with its own `TASK.md`, `contracts/`, and
 `tests/`. **Only one task is compiled and tested at a time** — selected by the
 `TASK` environment variable.
 
+## Tasks
+
+Each task has a matching lesson on the academy. Read the lesson and the task's
+`TASK.md` before you start.
+
+| #   | Task                                                        | Lesson                                                                                                                                                            |
+| --- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 01  | [`01-token`](01-token/)                                     | [Academy Token](https://academy.redduck.io/courses/development-on-ethereum/solidity-basics/academy-token)                                                         |
+| 02  | [`02-price-voting`](02-price-voting/)                       | [Voting on Token Price](https://academy.redduck.io/courses/development-on-ethereum/defi-tasks-and-patterns/voting-on-token-price)                                 |
+| 03  | [`03-price-voting-withdrawal`](03-price-voting-withdrawal/) | [Voting on Token Price with Withdrawal](https://academy.redduck.io/courses/development-on-ethereum/defi-tasks-and-patterns/voting-on-token-price-with-withdrawal) |
+| 04  | [`04-amm-pair`](04-amm-pair/)                               | [AMM Pair](https://academy.redduck.io/courses/development-on-ethereum/defi-tasks-and-patterns/amm-pair)                                                           |
+| 05  | [`05-merkle-airdrop`](05-merkle-airdrop/)                   | [Merkle Airdrop](https://academy.redduck.io/courses/development-on-ethereum/defi-tasks-and-patterns/merkle-airdrop)                                               |
+| 06  | [`06-raffle`](06-raffle/)                                   | [Raffle](https://academy.redduck.io/courses/development-on-ethereum/oracles/raffle)                                                                               |
+
 ## Getting started
 
 ```bash
@@ -64,7 +78,7 @@ npm run format:fix    # prettier over the repo
 ## Rules
 
 - Don't change function signatures, event signatures, or custom error names in
-  task contracts — the tests and the reviewer match on them.
+  task contracts unless asked to. The tests and the reviewer match on them.
 - Don't modify pre-defined test files. If a task asks you to write tests, add
   new ones; don't edit the existing spec.
 - Don't copy implementations from OpenZeppelin, Solmate, Solady, or tutorials.

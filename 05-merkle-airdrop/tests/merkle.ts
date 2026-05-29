@@ -1,4 +1,7 @@
-// Merkle tree utilities for the airdrop. Implement so proofs verify against your contract.
+// Merkle tree utilities for the airdrop. Implement these so the roots and proofs
+// you produce verify against your contract's claim() / _verify(). You choose the
+// leaf hash format, the node-combination rule, and the odd-layer convention —
+// whatever you pick must match what the contract recomputes.
 
 import { keccak256, encodePacked, concat, type Address, type Hex } from "viem";
 
@@ -7,51 +10,28 @@ export interface AirdropEntry {
   amount: bigint;
 }
 
+// Hash one airdrop entry into a leaf.
 export function hashLeaf(entry: AirdropEntry): Hex {
-  return keccak256(encodePacked(["address", "uint256"], [entry.account, entry.amount]));
-}
-
-// hash two nodes, smaller first so it matches the contract's ordering
-function hashPair(a: Hex, b: Hex): Hex {
-  return BigInt(a) < BigInt(b) ? keccak256(concat([a, b])) : keccak256(concat([b, a]));
+  // TODO
+  throw new Error("hashLeaf not implemented");
 }
 
 export class MerkleTree {
   layers: Hex[][];
 
   constructor(entries: AirdropEntry[]) {
-    this.layers = [entries.map(hashLeaf)];
-
-    let current = this.layers[0];
-    while (current.length > 1) {
-      const next: Hex[] = [];
-      for (let i = 0; i < current.length; i += 2) {
-        if (i + 1 < current.length) {
-          next.push(hashPair(current[i], current[i + 1]));
-        } else {
-          next.push(current[i]); // odd one out, carry it up
-        }
-      }
-      this.layers.push(next);
-      current = next;
-    }
+    // TODO: build the tree layers from the leaves up to a single root.
+    this.layers = [];
   }
 
   get root(): Hex {
-    return this.layers[this.layers.length - 1][0];
+    // TODO
+    throw new Error("root not implemented");
   }
 
+  // The sibling hashes from the leaf at `index` up to the root.
   getProof(index: number): Hex[] {
-    const proof: Hex[] = [];
-    let i = index;
-    for (let level = 0; level < this.layers.length - 1; level++) {
-      const layer = this.layers[level];
-      const sibling = i % 2 === 0 ? i + 1 : i - 1;
-      if (sibling < layer.length) {
-        proof.push(layer[sibling]);
-      }
-      i = Math.floor(i / 2);
-    }
-    return proof;
+    // TODO
+    throw new Error("getProof not implemented");
   }
 }
